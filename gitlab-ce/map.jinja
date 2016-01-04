@@ -1,0 +1,29 @@
+{% set gitlab = salt['grains.filter_by']({
+  'Debian': {
+    'gpgkey_url': 'https://packages.gitlab.com/gpg.key',
+    'repodist': salt['grains.filter_by']({
+      'wheezy': 'wheezy',
+      'jessie': 'jessie',
+      'precise': 'precise',
+      'quantal': 'precise',
+      'raring': 'precise',
+      'saucy': 'precise',
+      'trusty': 'trusty',
+      'utopic': 'trusty',
+      'vivid': 'trusty',
+      'wily': 'trusty'
+    }, grain='oscodename'),
+    'repofile': '/etc/apt/sources.list.d/gitlab-ce.list',
+    'pkg_name': 'gitlab-ce',
+    'service_name': 'gitlab-runsvdir'
+  },
+  'RedHat': {
+    'gpgkey_url': 'https://packages.gitlab.com/gpg.key',
+    'repodist': salt['grains.filter_by']({
+      'CentOS-6': '6',
+      'CentOS Linux-7': '7'
+    }, grain='osfinger'),
+    'pkg_name': 'gitlab-ce',
+    'service_name': 'gitlab-runsvdir'
+  }
+}, merge=salt['pillar.get']('gitlab:lookup')) %}

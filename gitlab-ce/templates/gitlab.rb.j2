@@ -1,0 +1,77 @@
+{% for section, properties in salt['pillar.get']('gitlab:conf', { 'main': { 'external_url': 'http://localhost' } }).iteritems() -%}
+{% if properties is mapping -%}
+#
+# {{ section }} configuration
+#
+{% if section == 'main' -%}
+{% for property, value in properties.iteritems() -%}
+{{ property }} "{{ value }}"
+{% endfor %}
+{% else -%}
+{% for property, value in properties.iteritems() -%}
+{% if value is string -%}
+{% if section == 'gitlab_rails' and (
+      property == 'ldap_servers' or
+      property == 'omniauth_providers' or
+      property == 'bitbucket' or
+      property == 'backup_upload_connection' or
+      property == 'env' or
+      property == 'rack_attack_git_basic_auth'
+   )
+-%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% elif section == 'gitlab_shell' and property == 'http_settings' -%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% elif section == 'postgresql' and (
+        property == 'md5_auth_cidr_addresses' or
+        property == 'trust_auth_cidr_addresses'
+   )
+-%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% elif section == 'web_server' and property == 'external_users' -%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% elif section == 'nginx' and (
+        property == 'listen_addresses' or
+        property == 'gzip_types'
+   )
+-%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% elif section == 'omnibus_gitconfig' and property == 'system' -%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% elif section == 'gitlab_ci' and (
+        property == 'gitlab_server' or
+        property == 'backup_upload_connection' or
+        property == 'env'
+   )
+-%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% elif section == 'ci_nginx' and (
+        property == 'listen_addresses' or
+        property == 'gzip_types'
+   )
+-%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% elif section == 'mattermost' and (
+        property == 'sql_data_source_replicas' or
+        property == 'aws'
+   )
+-%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% elif section == 'mattermost_nginx' and (
+        property == 'listen_addresses' or
+        property == 'gzip_types'
+   )
+-%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% elif section == 'pages_nginx' and property == 'listen_addresses' -%}
+{{ section }}['{{ property }}'] = {{ value }}
+{% else -%}
+{{ section }}['{{ property }}'] = "{{ value }}"
+{% endif -%}
+{% else -%}
+{{ section }}['{{ property }}'] = {{ value|lower }}
+{% endif -%}
+{% endfor %}
+{% endif -%}
+{% endif -%}
+{% endfor -%}
