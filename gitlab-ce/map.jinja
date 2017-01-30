@@ -1,6 +1,6 @@
 {% set gitlab = salt['grains.filter_by']({
   'Debian': {
-    'gpgkey_url': 'https://packages.gitlab.com/gpg.key',
+    'gpgkey_url': 'https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey',
     'repodist': salt['grains.filter_by']({
       'wheezy': 'wheezy',
       'jessie': 'jessie',
@@ -11,14 +11,15 @@
       'trusty': 'trusty',
       'utopic': 'trusty',
       'vivid': 'trusty',
-      'wily': 'trusty'
+      'wily': 'trusty',
+      'xenial': 'xenial'
     }, grain='oscodename'),
     'repofile': '/etc/apt/sources.list.d/gitlab-ce.list',
     'pkg_name': 'gitlab-ce',
     'service_name': 'gitlab-runsvdir'
   },
   'RedHat': {
-    'gpgkey_url': 'https://packages.gitlab.com/gpg.key',
+    'gpgkey_url': 'https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey',
     'repodist': salt['grains.filter_by']({
       'CentOS-6': '6',
       'CentOS Linux-7': '7'
